@@ -78,7 +78,17 @@
 		<dependency>
 			<groupId>org.springframework.security.oauth</groupId>
 			<artifactId>spring-security-oauth2</artifactId>
-		</dependency>        
+		</dependency>
+		<!-- Necessary to have a Redis backed HttpSession -->  
+		<dependency>
+                <groupId>org.springframework.session</groupId>
+                <artifactId>spring-session</artifactId>
+                <version>1.2.2.RELEASE</version>
+        </dependency>
+        <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-redis</artifactId>
+        </dependency>		        
 	</dependencies>
 
 	<!-- Build section copied from spring-parent-pom as we don't use it as a 

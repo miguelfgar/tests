@@ -1,9 +1,22 @@
 debug: true
 
+#logging:
+#  level:
+#    org:
+#      springframework.security.oauth2: DEBUG
+
 logging:
   level:
-    org:
-      springframework.security.oauth2: DEBUG
+    org.springframework: DEBUG
+    org.springframework.data.redis.core: DEBUG
+
+spring:
+  session:
+    timeout: 40000
+  redis:
+    host: 192.168.99.100
+# Only when password is set   password: secret
+    port: 6379      
 
 # Define the port where the API gateway server will be running
 server:
