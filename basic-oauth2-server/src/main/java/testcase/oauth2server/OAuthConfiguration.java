@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
+import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 
 @Configuration
@@ -29,7 +30,13 @@ public class OAuthConfiguration extends AuthorizationServerConfigurerAdapter {
 					// Commented to try with docker.. put this in Database .redirectUris("http://localhost:8765")
 					.autoApprove(true)
 					.accessTokenValiditySeconds(4);
-	}	
+	}
+	
+	@Override
+	public void configure(AuthorizationServerEndpointsConfigurer endpoints)
+			throws Exception {
+		endpoints.reuseRefreshTokens(false);
+	}
 	
 	@Override
 	public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception
