@@ -8,11 +8,15 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +30,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.security.oauth2.client.resource.UserRedirectRequiredException;
 import org.springframework.security.oauth2.client.test.BeforeOAuth2Context;
@@ -34,6 +41,7 @@ import org.springframework.security.oauth2.client.test.OAuth2ContextSetup;
 import org.springframework.security.oauth2.client.test.RestTemplateHolder;
 import org.springframework.security.oauth2.client.token.AccessTokenRequest;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -46,8 +54,10 @@ import org.springframework.web.util.UriComponentsBuilder;
  * http://stackoverflow.com/questions/27341604/exception-when-using-testresttemplate
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class Oauth2RefreshTokenInHighConcurrencyItTests implements RestTemplateHolder {
+
+	private Log logger = LogFactory.getLog(getClass());
 
 	private String authServerBaseUrl;
 
@@ -59,12 +69,20 @@ public class Oauth2RefreshTokenInHighConcurrencyItTests implements RestTemplateH
 	@Rule
 	public OAuth2ContextSetup context = OAuth2ContextSetup.standard(this);
 
+	private Collection<String> accessTokens = new LinkedHashSet<>();
+
+	private Collection<String> refreshTokens = new LinkedHashSet<>();
+
 	private String cookie;
+
+	private UsernamePasswordAuthenticationToken user;
 
 	@BeforeOAuth2Context
 	public void loginAndExtractCookie() {
 		authServerBaseUrl = "http://localhost:" + port;
 		this.cookie = loginAndGrabCookie();
+		user = new UsernamePasswordAuthenticationToken("user", "N/A",
+				AuthorityUtils.createAuthorityList("ROLE_USER"));
 	}
 
 	@Test
@@ -72,17 +90,25 @@ public class Oauth2RefreshTokenInHighConcurrencyItTests implements RestTemplateH
 	public void concurrencyTestRefreshingOAuth2Token() throws Exception {
 
 		approveAccessTokenGrant("http://localhost:" + port + "/");
+		SecurityContextHolder.getContext().setAuthentication(user);
 
 		assertEquals(HttpStatus.OK,
 				restTemplate
 						.getForEntity("http://localhost:" + port + "/me", String.class)
 						.getStatusCode());
+		captureTokens();
 
-		// Wait 10 secs to ensure the token is expired (it lasts 4 seconds)
-		// Thread.sleep(10000);
+		// Wait to ensure the token is expired (it lasts 2 seconds)
+		Thread.sleep(4000);
+
+		assertEquals(HttpStatus.OK,
+				restTemplate
+						.getForEntity("http://localhost:" + port + "/me", String.class)
+						.getStatusCode());
+		captureTokens();
 
 		// Run several concurrent threads accessing oauth2 protected resource /me
-		final int MYTHREADS = 1;
+		final int MYTHREADS = 10;
 		ExecutorService executor = Executors.newFixedThreadPool(MYTHREADS);
 		List<Future<?>> tasks = new ArrayList<>();
 		for (int i = 0; i < 50; i++) {
@@ -90,11 +116,27 @@ public class Oauth2RefreshTokenInHighConcurrencyItTests implements RestTemplateH
 			tasks.add(executor.submit(worker));
 		}
 		executor.shutdown();
-		// Wait until all threads are finish
-		for (Future<?> task : tasks) {
-			task.get();
+		try {
+			// Wait until all threads are finish
+			for (Future<?> task : tasks) {
+				task.get();
+			}
 		}
-		System.out.println("\nFinished all threads");
+		finally {
+			System.out.println("\nFinished all threads");
+			logger.info("Access tokens: " + accessTokens);
+			logger.info("Refresh tokens: " + refreshTokens);
+		}
+	}
+
+	private void captureTokens() {
+		OAuth2AccessToken token = context.getAccessToken();
+		if (token != null) {
+			accessTokens.add(token.getValue());
+			refreshTokens.add(token.getRefreshToken().getValue());
+			logger.info(
+					"Token: " + token + ", refresh token: " + token.getRefreshToken());
+		}
 	}
 
 	private String loginAndGrabCookie() {
@@ -146,8 +188,8 @@ public class Oauth2RefreshTokenInHighConcurrencyItTests implements RestTemplateH
 
 	private class RunnableCalltoMeResource implements Runnable {
 
-		UriComponentsBuilder builder = null;
-		HttpEntity<String> entity = null;
+		private UriComponentsBuilder builder = null;
+		private HttpEntity<String> entity = null;
 
 		RunnableCalltoMeResource() {
 			builder = UriComponentsBuilder.fromHttpUrl(authServerBaseUrl + "/me");
@@ -157,10 +199,16 @@ public class Oauth2RefreshTokenInHighConcurrencyItTests implements RestTemplateH
 
 		@Override
 		public void run() {
-			ResponseEntity<String> result2 = restTemplate.exchange(
-					builder.build().encode().toUri(), HttpMethod.GET, entity,
-					String.class);
-			System.out.println("/me resulted in: " + result2.getStatusCode());
+			SecurityContextHolder.getContext().setAuthentication(user);
+			try {
+				ResponseEntity<String> result2 = restTemplate.exchange(
+						builder.build().encode().toUri(), HttpMethod.GET, entity,
+						String.class);
+				logger.info("/me resulted in: " + result2.getStatusCode());
+			}
+			finally {
+				captureTokens();
+			}
 		}
 	}
 
