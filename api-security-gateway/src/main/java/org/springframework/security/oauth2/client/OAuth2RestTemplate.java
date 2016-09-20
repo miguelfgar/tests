@@ -207,7 +207,7 @@ public class OAuth2RestTemplate extends RestTemplate implements OAuth2RestOperat
 		return context;
 	}
 
-	protected OAuth2AccessToken acquireAccessToken(OAuth2ClientContext oauth2Context)
+	protected synchronized OAuth2AccessToken acquireAccessToken(OAuth2ClientContext oauth2Context)
 			throws UserRedirectRequiredException {
 
 		AccessTokenRequest accessTokenRequest = oauth2Context.getAccessTokenRequest();

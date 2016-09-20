@@ -89,14 +89,15 @@ The other three projects contain:
   
 ## Tests results comparison (branches REFRESH_ISSUE_WITHOUT_FIX and REFRESH_ISSUE_WITH_FIX)  
 
-- REFRESH_ISSUE_WITHOUT_FIX: We see several threads posting the Authorization Server to refresh the same token. Several the get a new access token. All this happen in less than 100ms:
+- REFRESH_ISSUE_WITHOUT_FIX: We see several threads posting the Authorization Server to refresh the same token. Several the get a new access token. All this happen in less than 100ms.
+  **Log in api-security-gateway:**
 
-'''
+```
 2016-09-20 11:14:36.525 DEBUG 9300 --- [nio-8765-exec-5] o.s.s.oauth2.client.OAuth2RestTemplate   : ############################################################################################################################################################
 2016-09-20 11:14:36.525 DEBUG 9300 --- [nio-8765-exec-5] o.s.s.oauth2.client.OAuth2RestTemplate   : #### RETRIEVED EXPIRED ACCESS TOKEN FROM OAuth2ClientContext: a457ac1d-c486-43f2-9198-542ea0b42352 REFRESH TOKEN: 408dd3af-5c85-4e52-9631-009d637fc0cc
 2016-09-20 11:14:36.525 DEBUG 9300 --- [nio-8765-exec-5] o.s.s.oauth2.client.OAuth2RestTemplate   : ############################################################################################################################################################
 2016-09-20 11:14:36.528 DEBUG 9300 --- [nio-8765-exec-5] g.c.AuthorizationCodeAccessTokenProvider : Retrieving token from http://localhost:8088/oauth/token
-2016-09-20 11:14:36.532 DEBUG 9300 --- [nio-8765-exec-5] g.c.AuthorizationCodeAccessTokenProvider : Encoding and sending form: {grant_type=[refresh_token], refresh_token=[408dd3af-5c85-4e52-9631-009d637fc0cc]}
+2016-09-20 11:14:36.532 DEBUG 9300 --- [nio-8765-exec-5] g.c.AuthorizationCodeAccessTokenProvider : **Encoding and sending form: {grant_type=[refresh_token], refresh_token=[408dd3af-5c85-4e52-9631-009d637fc0cc]}**
 2016-09-20 11:14:36.547 DEBUG 9300 --- [nio-8765-exec-4] o.s.s.oauth2.client.OAuth2RestTemplate   : ############################################################################################################################################################
 2016-09-20 11:14:36.548 DEBUG 9300 --- [nio-8765-exec-6] o.s.s.oauth2.client.OAuth2RestTemplate   : ############################################################################################################################################################
 2016-09-20 11:14:36.552 DEBUG 9300 --- [nio-8765-exec-3] o.s.s.oauth2.client.OAuth2RestTemplate   : ############################################################################################################################################################
@@ -108,15 +109,15 @@ The other three projects contain:
 2016-09-20 11:14:36.553 DEBUG 9300 --- [nio-8765-exec-3] o.s.s.oauth2.client.OAuth2RestTemplate   : ############################################################################################################################################################
 2016-09-20 11:14:36.557 DEBUG 9300 --- [nio-8765-exec-4] g.c.AuthorizationCodeAccessTokenProvider : Retrieving token from http://localhost:8088/oauth/token
 2016-09-20 11:14:36.557 DEBUG 9300 --- [nio-8765-exec-6] g.c.AuthorizationCodeAccessTokenProvider : Retrieving token from http://localhost:8088/oauth/token
-2016-09-20 11:14:36.557 DEBUG 9300 --- [nio-8765-exec-4] g.c.AuthorizationCodeAccessTokenProvider : Encoding and sending form: {grant_type=[refresh_token], refresh_token=[408dd3af-5c85-4e52-9631-009d637fc0cc]}
-2016-09-20 11:14:36.557 DEBUG 9300 --- [nio-8765-exec-6] g.c.AuthorizationCodeAccessTokenProvider : Encoding and sending form: {grant_type=[refresh_token], refresh_token=[408dd3af-5c85-4e52-9631-009d637fc0cc]}
+2016-09-20 11:14:36.557 DEBUG 9300 --- [nio-8765-exec-4] g.c.AuthorizationCodeAccessTokenProvider : **Encoding and sending form: {grant_type=[refresh_token], refresh_token=[408dd3af-5c85-4e52-9631-009d637fc0cc]}**
+2016-09-20 11:14:36.557 DEBUG 9300 --- [nio-8765-exec-6] g.c.AuthorizationCodeAccessTokenProvider : **Encoding and sending form: {grant_type=[refresh_token], refresh_token=[408dd3af-5c85-4e52-9631-009d637fc0cc]}**
 2016-09-20 11:14:36.558 DEBUG 9300 --- [nio-8765-exec-3] g.c.AuthorizationCodeAccessTokenProvider : Retrieving token from http://localhost:8088/oauth/token
-2016-09-20 11:14:36.558 DEBUG 9300 --- [nio-8765-exec-3] g.c.AuthorizationCodeAccessTokenProvider : Encoding and sending form: {grant_type=[refresh_token], refresh_token=[408dd3af-5c85-4e52-9631-009d637fc0cc]}
+2016-09-20 11:14:36.558 DEBUG 9300 --- [nio-8765-exec-3] g.c.AuthorizationCodeAccessTokenProvider : **Encoding and sending form: {grant_type=[refresh_token], refresh_token=[408dd3af-5c85-4e52-9631-009d637fc0cc]}**
 2016-09-20 11:14:36.559 DEBUG 9300 --- [nio-8765-exec-7] o.s.s.oauth2.client.OAuth2RestTemplate   : ############################################################################################################################################################
 2016-09-20 11:14:36.559 DEBUG 9300 --- [nio-8765-exec-7] o.s.s.oauth2.client.OAuth2RestTemplate   : #### RETRIEVED EXPIRED ACCESS TOKEN FROM OAuth2ClientContext: a457ac1d-c486-43f2-9198-542ea0b42352 REFRESH TOKEN: 408dd3af-5c85-4e52-9631-009d637fc0cc
 2016-09-20 11:14:36.560 DEBUG 9300 --- [nio-8765-exec-7] o.s.s.oauth2.client.OAuth2RestTemplate   : ############################################################################################################################################################
 2016-09-20 11:14:36.563 DEBUG 9300 --- [nio-8765-exec-7] g.c.AuthorizationCodeAccessTokenProvider : Retrieving token from http://localhost:8088/oauth/token
-2016-09-20 11:14:36.563 DEBUG 9300 --- [nio-8765-exec-7] g.c.AuthorizationCodeAccessTokenProvider : Encoding and sending form: {grant_type=[refresh_token], refresh_token=[408dd3af-5c85-4e52-9631-009d637fc0cc]}
+2016-09-20 11:14:36.563 DEBUG 9300 --- [nio-8765-exec-7] g.c.AuthorizationCodeAccessTokenProvider : **Encoding and sending form: {grant_type=[refresh_token], refresh_token=[408dd3af-5c85-4e52-9631-009d637fc0cc]}**
 2016-09-20 11:14:36.577 DEBUG 9300 --- [nio-8765-exec-6] o.s.s.oauth2.client.OAuth2RestTemplate   : #################################################################################################################################################################################
 2016-09-20 11:14:36.577 DEBUG 9300 --- [nio-8765-exec-6] o.s.s.oauth2.client.OAuth2RestTemplate   : #### TOKEN REFRESHED!!! UPDATED CONTEXT WITH NEW TOKEN, WRITTEN IN OAuth2ClientContext: **31cbd949-7eb7-438d-bc9e-a313ddb902e9** REFRESH TOKEN: 408dd3af-5c85-4e52-9631-009d637fc0cc
 2016-09-20 11:14:36.577 DEBUG 9300 --- [nio-8765-exec-6] o.s.s.oauth2.client.OAuth2RestTemplate   : #################################################################################################################################################################################
@@ -132,6 +133,44 @@ The other three projects contain:
 2016-09-20 11:14:36.598 DEBUG 9300 --- [nio-8765-exec-3] o.s.s.oauth2.client.OAuth2RestTemplate   : #################################################################################################################################################################################
 2016-09-20 11:14:36.598 DEBUG 9300 --- [nio-8765-exec-3] o.s.s.oauth2.client.OAuth2RestTemplate   : #### TOKEN REFRESHED!!! UPDATED CONTEXT WITH NEW TOKEN, WRITTEN IN OAuth2ClientContext: **4f6d0500-6873-475b-b94a-e0294220fec3** REFRESH TOKEN: 408dd3af-5c85-4e52-9631-009d637fc0cc
 2016-09-20 11:14:36.598 DEBUG 9300 --- [nio-8765-exec-3] o.s.s.oauth2.client.OAuth2RestTemplate   : #################################################################################################################################################################################
-'''
+```
 
+- REFRESH_ISSUE_WITHFIX: The threads corresponding to the client requests are synchronized for refresh. Only one post is performed to the AS to refresh. The rest of the threads return the same OAuth2 token (only one access token is generated in the AS):
+  **Log in api-security-gateway:**
+
+```  
+2016-09-20 11:27:06.803 DEBUG 12448 --- [nio-8765-exec-4] o.s.s.oauth2.client.OAuth2RestTemplate   : ############################################################################################################################################################
+2016-09-20 11:27:06.804 DEBUG 12448 --- [nio-8765-exec-4] o.s.s.oauth2.client.OAuth2RestTemplate   : #### RETRIEVED EXPIRED ACCESS TOKEN FROM OAuth2ClientContext: fe644ff1-2231-42d8-b518-93822ddb4547 REFRESH TOKEN: 408dd3af-5c85-4e52-9631-009d637fc0cc
+2016-09-20 11:27:06.804 DEBUG 12448 --- [nio-8765-exec-4] o.s.s.oauth2.client.OAuth2RestTemplate   : ############################################################################################################################################################
+2016-09-20 11:27:06.806 DEBUG 12448 --- [nio-8765-exec-5] o.s.s.oauth2.client.OAuth2RestTemplate   : ############################################################################################################################################################
+2016-09-20 11:27:06.806 DEBUG 12448 --- [nio-8765-exec-5] o.s.s.oauth2.client.OAuth2RestTemplate   : #### RETRIEVED EXPIRED ACCESS TOKEN FROM OAuth2ClientContext: fe644ff1-2231-42d8-b518-93822ddb4547 REFRESH TOKEN: 408dd3af-5c85-4e52-9631-009d637fc0cc
+2016-09-20 11:27:06.806 DEBUG 12448 --- [nio-8765-exec-5] o.s.s.oauth2.client.OAuth2RestTemplate   : ############################################################################################################################################################
+2016-09-20 11:27:06.806 DEBUG 12448 --- [nio-8765-exec-4] g.c.AuthorizationCodeAccessTokenProvider : Retrieving token from http://localhost:8088/oauth/token
+2016-09-20 11:27:06.821 DEBUG 12448 --- [nio-8765-exec-3] o.s.s.oauth2.client.OAuth2RestTemplate   : ############################################################################################################################################################
+2016-09-20 11:27:06.821 DEBUG 12448 --- [nio-8765-exec-3] o.s.s.oauth2.client.OAuth2RestTemplate   : #### RETRIEVED EXPIRED ACCESS TOKEN FROM OAuth2ClientContext: fe644ff1-2231-42d8-b518-93822ddb4547 REFRESH TOKEN: 408dd3af-5c85-4e52-9631-009d637fc0cc
+2016-09-20 11:27:06.821 DEBUG 12448 --- [nio-8765-exec-3] o.s.s.oauth2.client.OAuth2RestTemplate   : ############################################################################################################################################################
+2016-09-20 11:27:06.828 DEBUG 12448 --- [nio-8765-exec-6] o.s.s.oauth2.client.OAuth2RestTemplate   : ############################################################################################################################################################
+2016-09-20 11:27:06.828 DEBUG 12448 --- [nio-8765-exec-6] o.s.s.oauth2.client.OAuth2RestTemplate   : #### RETRIEVED EXPIRED ACCESS TOKEN FROM OAuth2ClientContext: fe644ff1-2231-42d8-b518-93822ddb4547 REFRESH TOKEN: 408dd3af-5c85-4e52-9631-009d637fc0cc
+2016-09-20 11:27:06.828 DEBUG 12448 --- [nio-8765-exec-6] o.s.s.oauth2.client.OAuth2RestTemplate   : ############################################################################################################################################################
+2016-09-20 11:27:06.839 DEBUG 12448 --- [nio-8765-exec-7] o.s.s.oauth2.client.OAuth2RestTemplate   : ############################################################################################################################################################
+2016-09-20 11:27:06.839 DEBUG 12448 --- [nio-8765-exec-7] o.s.s.oauth2.client.OAuth2RestTemplate   : #### RETRIEVED EXPIRED ACCESS TOKEN FROM OAuth2ClientContext: fe644ff1-2231-42d8-b518-93822ddb4547 REFRESH TOKEN: 408dd3af-5c85-4e52-9631-009d637fc0cc
+2016-09-20 11:27:06.839 DEBUG 12448 --- [nio-8765-exec-7] o.s.s.oauth2.client.OAuth2RestTemplate   : ############################################################################################################################################################
+2016-09-20 11:27:06.840 DEBUG 12448 --- [nio-8765-exec-4] g.c.AuthorizationCodeAccessTokenProvider : **Encoding and sending form: {grant_type=[refresh_token], refresh_token=[408dd3af-5c85-4e52-9631-009d637fc0cc]}**
+2016-09-20 11:27:06.850 DEBUG 12448 --- [nio-8765-exec-4] o.s.s.oauth2.client.OAuth2RestTemplate   : #################################################################################################################################################################################
+2016-09-20 11:27:06.851 DEBUG 12448 --- [nio-8765-exec-4] o.s.s.oauth2.client.OAuth2RestTemplate   : #### TOKEN REFRESHED!!! UPDATED CONTEXT WITH NEW TOKEN, WRITTEN IN OAuth2ClientContext: **f2b67673-7a20-4017-a973-36ecf9a0d020** REFRESH TOKEN: 408dd3af-5c85-4e52-9631-009d637fc0cc
+2016-09-20 11:27:06.851 DEBUG 12448 --- [nio-8765-exec-4] o.s.s.oauth2.client.OAuth2RestTemplate   : #################################################################################################################################################################################
+2016-09-20 11:27:06.883 DEBUG 12448 --- [nio-8765-exec-7] o.s.s.oauth2.client.OAuth2RestTemplate   : #################################################################################################################################################################################
+2016-09-20 11:27:06.883 DEBUG 12448 --- [nio-8765-exec-7] o.s.s.oauth2.client.OAuth2RestTemplate   : #### TOKEN REFRESHED!!! UPDATED CONTEXT WITH NEW TOKEN, WRITTEN IN OAuth2ClientContext: **f2b67673-7a20-4017-a973-36ecf9a0d020** REFRESH TOKEN: 408dd3af-5c85-4e52-9631-009d637fc0cc
+2016-09-20 11:27:06.883 DEBUG 12448 --- [nio-8765-exec-7] o.s.s.oauth2.client.OAuth2RestTemplate   : #################################################################################################################################################################################
+2016-09-20 11:27:06.885 DEBUG 12448 --- [nio-8765-exec-6] o.s.s.oauth2.client.OAuth2RestTemplate   : #################################################################################################################################################################################
+2016-09-20 11:27:06.885 DEBUG 12448 --- [nio-8765-exec-6] o.s.s.oauth2.client.OAuth2RestTemplate   : #### TOKEN REFRESHED!!! UPDATED CONTEXT WITH NEW TOKEN, WRITTEN IN OAuth2ClientContext: **f2b67673-7a20-4017-a973-36ecf9a0d020** REFRESH TOKEN: 408dd3af-5c85-4e52-9631-009d637fc0cc
+2016-09-20 11:27:06.885 DEBUG 12448 --- [nio-8765-exec-6] o.s.s.oauth2.client.OAuth2RestTemplate   : #################################################################################################################################################################################
+2016-09-20 11:27:06.893 DEBUG 12448 --- [nio-8765-exec-3] o.s.s.oauth2.client.OAuth2RestTemplate   : #################################################################################################################################################################################
+2016-09-20 11:27:06.893 DEBUG 12448 --- [nio-8765-exec-3] o.s.s.oauth2.client.OAuth2RestTemplate   : #### TOKEN REFRESHED!!! UPDATED CONTEXT WITH NEW TOKEN, WRITTEN IN OAuth2ClientContext: **f2b67673-7a20-4017-a973-36ecf9a0d020** REFRESH TOKEN: 408dd3af-5c85-4e52-9631-009d637fc0cc
+2016-09-20 11:27:06.893 DEBUG 12448 --- [nio-8765-exec-3] o.s.s.oauth2.client.OAuth2RestTemplate   : #################################################################################################################################################################################
+2016-09-20 11:27:06.894 DEBUG 12448 --- [nio-8765-exec-5] o.s.s.oauth2.client.OAuth2RestTemplate   : #################################################################################################################################################################################
+2016-09-20 11:27:06.894 DEBUG 12448 --- [nio-8765-exec-5] o.s.s.oauth2.client.OAuth2RestTemplate   : #### TOKEN REFRESHED!!! UPDATED CONTEXT WITH NEW TOKEN, WRITTEN IN OAuth2ClientContext: **f2b67673-7a20-4017-a973-36ecf9a0d020** REFRESH TOKEN: 408dd3af-5c85-4e52-9631-009d637fc0cc
+2016-09-20 11:27:06.894 DEBUG 12448 --- [nio-8765-exec-5] o.s.s.oauth2.client.OAuth2RestTemplate   : #################################################################################################################################################################################
+```
+  
 
