@@ -11,9 +11,7 @@
 	<description>Maven multimodule project</description>
 
 	<modules>
-        <module>api-security-gateway</module>
 		<module>basic-oauth2-server</module>
-		<module>client-for-tests</module>
 	</modules>
 	
 	<repositories>
