@@ -9,14 +9,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.embedded.EmbeddedWebApplicationContext;
 import org.springframework.boot.test.IntegrationTest;
-import org.springframework.boot.test.OutputCapture;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.TestRestTemplate;
 import org.springframework.http.HttpEntity;
@@ -31,6 +29,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import testcase.testclient.Application;
+
 
 /**
  * Necessary to have httpclient for this tests (with scope tests) so that the http returns are handle correctly.
@@ -42,9 +42,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 @IntegrationTest("server.port=0")
 @SpringApplicationConfiguration(classes = Application.class)
 public class Oauth2RefreshTokenInHighConcurrencyItTests {
-	
-	@Rule
-	public OutputCapture capture = new OutputCapture();	
 	
 	@Value("${oauth2.authserver.baseUrl:}")
 	protected String authServerBaseUrl;
@@ -89,7 +86,6 @@ public class Oauth2RefreshTokenInHighConcurrencyItTests {
 		while (!executor.isTerminated()) {
 
 		}
-		
 		System.out.println("\nFinished all threads");
 	}
 
