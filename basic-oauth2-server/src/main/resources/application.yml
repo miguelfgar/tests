@@ -1,2 +1,8 @@
 server:
   port: 8088
+security:
+  user:
+    password: password
+logging:
+  level:
+    org.springframework.security.oauth2: DEBUG

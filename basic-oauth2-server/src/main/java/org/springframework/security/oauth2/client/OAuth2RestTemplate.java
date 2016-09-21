@@ -170,7 +170,7 @@ public class OAuth2RestTemplate extends RestTemplate implements OAuth2RestOperat
 	public OAuth2AccessToken getAccessToken() throws UserRedirectRequiredException {
 
 		OAuth2AccessToken accessToken = context.getAccessToken();
-
+		
 		if (accessToken == null || accessToken.isExpired()) {
 
 			// ADDED JUST FOR THE TEST CASE 
@@ -238,7 +238,7 @@ public class OAuth2RestTemplate extends RestTemplate implements OAuth2RestOperat
 		
 		// ADDED JUST FOR THE TEST CASE
 		logger.debug("#################################################################################################################################################################################");
-		logger.debug("#### TOKEN REFRESHED!!! UPDATED CONTEXT WITH NEW TOKEN, WRITTEN IN OAuth2ClientContext: " + oauth2Context.getAccessToken().getValue() + " REFRESH TOKEN: " + oauth2Context.getAccessToken().getRefreshToken().getValue());
+		logger.debug("#### UPDATED CONTEXT WITH NEW TOKEN, WRITTEN IN OAuth2ClientContext: " + oauth2Context.getAccessToken().getValue() + " REFRESH TOKEN: " + oauth2Context.getAccessToken().getRefreshToken().getValue());
 		logger.debug("#################################################################################################################################################################################");			
 		
 		return accessToken;
