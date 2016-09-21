@@ -23,6 +23,7 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.rule.OutputCapture;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -45,8 +46,11 @@ import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.util.UriComponentsBuilder;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 /**
  * Necessary to have httpclient for this tests (with scope tests) so that the http returns
@@ -76,6 +80,9 @@ public class Oauth2RefreshTokenInHighConcurrencyItTests implements RestTemplateH
 	private String cookie;
 
 	private UsernamePasswordAuthenticationToken user;
+	
+	@Rule
+	public OutputCapture capture = new OutputCapture();
 
 	@BeforeOAuth2Context
 	public void loginAndExtractCookie() {
@@ -101,11 +108,15 @@ public class Oauth2RefreshTokenInHighConcurrencyItTests implements RestTemplateH
 		// Wait to ensure the token is expired (it lasts 2 seconds)
 		Thread.sleep(4000);
 
+		/* This was forcing a refresh without concurrency (in the main thread). This makes the access token not expired anymore for the
+		 * other threads that are run under high concurrency and so the issue was not reproduced (as the problem was precisely when the
+		 * token was expired)		
 		assertEquals(HttpStatus.OK,
 				restTemplate
 						.getForEntity("http://localhost:" + port + "/me", String.class)
 						.getStatusCode());
 		captureTokens();
+		*/		
 
 		// Run several concurrent threads accessing oauth2 protected resource /me
 		final int MYTHREADS = 10;
@@ -126,7 +137,11 @@ public class Oauth2RefreshTokenInHighConcurrencyItTests implements RestTemplateH
 			System.out.println("\nFinished all threads");
 			logger.info("Access tokens: " + accessTokens);
 			logger.info("Refresh tokens: " + refreshTokens);
-		}
+		}		
+		
+		
+		int numberOfCallsToRefresh = StringUtils.countOccurrencesOf(capture.toString(), "AuthorizationCodeAccessTokenProvider : Encoding and sending form: {grant_type=[refresh_token], refresh_token=");   
+		assertThat(numberOfCallsToRefresh, equalTo(1));
 	}
 
 	private void captureTokens() {
